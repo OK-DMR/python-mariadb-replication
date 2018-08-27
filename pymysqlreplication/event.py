@@ -276,3 +276,18 @@ class NotImplementedEvent(BinLogEvent):
         super(NotImplementedEvent, self).__init__(
             from_packet, event_size, table_map, ctl_connection, **kwargs)
         self.packet.advance(event_size)
+
+class MariadbGtidEvent(BinLogEvent):
+    def __init__(self, from_packet, event_size, table_map, ctl_connection, **kwargs):
+        super(MariadbGtidEvent, self).__init__(
+            from_packet, event_size, table_map, ctl_connection, **kwargs)
+        # self.packet.advance(event_size)
+    
+        self.gtid_seq = self.packet.read_uint64()
+        self.server_id = from_packet.server_id
+        self.gtid_domain = self.packet.read_uint32()
+        self.flags = self.packet.read_uint8()
+
+    def _dump(self):
+        super(MariadbGtidEvent, self)._dump()
+        print("%d-%d-%d" % (self.gtid_domain, self.server_id, self.gtid_seq))
