@@ -283,11 +283,12 @@ class MariadbGtidEvent(BinLogEvent):
             from_packet, event_size, table_map, ctl_connection, **kwargs)
         # self.packet.advance(event_size)
     
-        self.gtid_seq = self.packet.read_uint64()
+        self.gtid_seq_no = self.packet.read_uint64()
         self.server_id = from_packet.server_id
-        self.gtid_domain = self.packet.read_uint32()
+        self.domain_id = self.packet.read_uint32()
         self.flags = self.packet.read_uint8()
+        self.gtid = "%d-%d-%d" % (self.domain_id, self.server_id, self.gtid_seq_no)
 
     def _dump(self):
         super(MariadbGtidEvent, self)._dump()
-        print("%d-%d-%d" % (self.gtid_domain, self.server_id, self.gtid_seq))
+        print(self.gtid)
