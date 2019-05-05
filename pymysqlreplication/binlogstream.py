@@ -296,7 +296,7 @@ class BinLogStreamReader(object):
             cur.close()
 
         if self.__mariadb:
-            print "setting @mariadb_slave_capability=4"
+            print("setting @mariadb_slave_capability=4")
             cur = self._stream_connection.cursor()
             cur.execute("SET @mariadb_slave_capability=4")
             cur.close()
